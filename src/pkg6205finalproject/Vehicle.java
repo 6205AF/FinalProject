@@ -1,3 +1,4 @@
+import java.awt.Graphics;
 import java.util.*;
 
 public abstract class Vehicle {
@@ -18,5 +19,5 @@ public abstract class Vehicle {
 	
 	public boolean hasMoved;//whether has moved in current tick
 	public int frontVehicle;//the id of the front vehicle
-
+        public void paintMe(Graphics g){} //template for child
 }

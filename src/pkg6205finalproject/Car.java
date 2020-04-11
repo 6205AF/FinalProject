@@ -1,4 +1,8 @@
 
+import java.awt.Color;
+import java.awt.Graphics;
+
+
 public class Car extends Vehicle{
 	public double px,py;//current position
 	public double v; //current velocity
@@ -27,4 +31,13 @@ public class Car extends Vehicle{
 		this.px = 0;
 		this.direction = direction.forward;
 	}
+        
+        public void paintMe(Graphics g){
+            g.setColor(Color.BLUE);
+            int px = (int) this.px;
+            int py = (int) this.py;
+            int length = (int) this.length;
+            int width = (int) this.width;
+            g.fillRect(px,py,length,width);
+        }
 }

@@ -1,5 +1,8 @@
+
+import java.awt.BorderLayout;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import javax.swing.JFrame;
 
 public class TrafficSimulation {
 	//settings of vehicles
@@ -25,7 +28,8 @@ public class TrafficSimulation {
 	public double speedLimit;//speed limit of the road
 
 	//graphs
-
+        JFrame frame = new JFrame("Traffic Simulation");
+        Road road;
 
 	//other settings
 	public boolean hasSpeicalVehicle = false;//whether spawn special vehicle
@@ -41,9 +45,12 @@ public class TrafficSimulation {
 	//other data
 	public int counter = 0;//a counter of current number of vehicles in the graph
 	public double flow = 0;//number of vehicles pass in a certain time
-	public Vehicle[][] vehicles = new Vehicle[][] {};//vehicles in screen
+	public Vehicle[][] vehicles = new Vehicle[][]{};//vehicles in screen
+        //ArrayList<Vehicle> drawVehicles = new ArrayList(); // move every vehicle objects to this list and refresh every time
+           //help to add vehicle from vehicles to drawVehicles
+	
 
-	//instantiates
+        //instantiates
 	Driver altruisticDriver;
 	Driver egoisticDriver;
 	Vehicle car;
@@ -60,6 +67,7 @@ public class TrafficSimulation {
 	//set settings for drivers, vehicles, and board
 	public void set() {
 		//initialize attributes
+                this.road = new Road(vehicles);
 		this.cutInWaitingTimeA = 5;
 		this.cutInWaitingTimeE = 1;
 		this.hasSpeicalVehicle = false;
@@ -99,12 +107,9 @@ public class TrafficSimulation {
 				}
 			}
 			//move all vehicles
-			move(vehicles);
-			//spawn new vehicle if possible
-			spawn();
-			//draw all vehicle
+			move(vehicles);// array out of bound error
+                        spawn();
 			draw();
-			//wait 1/frames second
 			try {
 				TimeUnit.MILLISECONDS.sleep((long)(1/this.frames));
 			} catch (InterruptedException e) {
@@ -509,7 +514,13 @@ public class TrafficSimulation {
 
 	//draw current tick
 	public void draw() {
-
+                frame.setSize(roadLength,lanes*roadWidth);
+                frame.setLayout(new BorderLayout());
+                frame.add(road,BorderLayout.CENTER);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+               
+                
 	}
 
 	//spawn a new vehicle
@@ -556,5 +567,13 @@ public class TrafficSimulation {
 				l = temp;
 			}
 		}
+	}
+        
+        public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		TrafficSimulation a = new TrafficSimulation();
+		a.set();
+                a.draw();
+                a.run();
 	}
 }
