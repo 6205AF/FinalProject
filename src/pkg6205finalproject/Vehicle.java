@@ -1,4 +1,5 @@
-import java.awt.Graphics;
+
+import java.awt.*;
 import java.util.*;
 
 public abstract class Vehicle {
@@ -20,4 +21,24 @@ public abstract class Vehicle {
 	public boolean hasMoved;//whether has moved in current tick
 	public int frontVehicle;//the id of the front vehicle
         public void paintMe(Graphics g){} //template for child
+        public int getX(){
+            int px = (int) this.px;
+            return px;
+        }
+        public void setX(int newx){
+            px = newx+0.0;
+        }
+        
+        public int getSpeed(){
+            int v = (int) this.v;
+            return v;
+        }
+//	public void paintMe(Graphics g){
+//		g.setColor(Color.BLUE);
+//		int px = (int) this.px;
+//		int py = (int) this.py;
+//		int length = (int) this.length;
+//		int width = (int) this.width;
+//		g.fillRect(px,py,length,width);
+//	}
 }

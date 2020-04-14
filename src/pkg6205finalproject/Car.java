@@ -22,22 +22,27 @@ public class Car extends Vehicle{
 	public boolean hasMoved;//whether has moved in current tick
 	
 	public Car() {}
-	
-	public Car (double length, double width, double acceleration, double deceleration) {
+
+	// initialize
+	public Car (double length, double width, double acceleration, double deceleration, int lane) {
 		this.length = length;
 		this.width = width;
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
 		this.px = 0;
+		this.py = lane * Road.LANE_WIDTH;
 		this.direction = direction.forward;
+
+	}
+
+	public void paintMe(Graphics g){
+		g.setColor(Color.BLUE);
+		int px = (int) this.px;
+		int py = (int) this.py;
+		int length = (int) this.length;
+		int width = (int) this.width;
+		g.fillRect(px,py,length,width);
 	}
         
-        public void paintMe(Graphics g){
-            g.setColor(Color.BLUE);
-            int px = (int) this.px;
-            int py = (int) this.py;
-            int length = (int) this.length;
-            int width = (int) this.width;
-            g.fillRect(px,py,length,width);
-        }
+
 }
