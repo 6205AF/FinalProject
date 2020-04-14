@@ -69,7 +69,7 @@ public class TrafficSimulation {
 	public TrafficSimulation() {
 		boolean running = false;
 		//initialize attributes
-		this.road = new Road(vehicles);
+		this.road = new Road(this);
 		this.laneInFixing = new int[]{};
 		this.altruisticDriver = new Driver(true, cutInWaitingTimeA, maxSpeedA);
 		this.egoisticDriver = new Driver(false, cutInWaitingTimeE, maxSpeedE);
@@ -78,9 +78,11 @@ public class TrafficSimulation {
 			this.specialVehicle = new SpecialVehicle(carLength, width, acceleration, deceleration);
 		}
 		// initilize vehicles of lanes
-		for (int i = 0; i < lanes; i++){
+		for (Integer i = 0; i < lanes; i++){
 			vehicles.put(i,new ArrayList<Vehicle>());
 		}
+		spawn();
+//		spawn();
 
 	}
 
@@ -137,6 +139,7 @@ public class TrafficSimulation {
 		Random a = new Random();
 		double vehicleType = a.nextDouble();
 		double driverType = a.nextDouble();
+		int newLane = a.nextInt(lanes);
 		Driver newDriver;
 		Vehicle newVehicle;
 		//decide which kind of driver is in the vehicle
@@ -148,31 +151,36 @@ public class TrafficSimulation {
 		}
 		//decide which kind of vehicle should be spawned
 		if (vehicleType < this.truckRatio) {
-			newVehicle = this.truck;}
-		else {
-			newVehicle = this.car;
+			newVehicle = new Truck(truckLength, width, acceleration, deceleration, newLane);
+		} else {
+			newVehicle = new Car(carLength,width,acceleration,deceleration,newLane);
 		}
 		newVehicle.driver = newDriver;
+		newVehicle.lane = newLane;
+		System.out.println(newLane);
+		vehicles.get(newLane).add(newVehicle);
+
 		//spawn new vehicle in a random possible lane
-		ArrayList<Integer> l = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4));
-		while (l != null) {
-			int i = a.nextInt(l.size());
-			if (vehicles.get(l.get(i)).size()==0) {
-				vehicles.get(l.get(i)).add(newVehicle);
-				counter++;
-				break;
-			}
-			Vehicle lastVehicle = vehicles.get(l.get(i)).get(vehicles.get(l.get(i)).size()-1);
-			if (newVehicle.px + 0.5*newVehicle.length < lastVehicle.px - 0.5*lastVehicle.length) {
-				newVehicle.py = (l.get(i)*2+1)*this.roadWidth/(this.lanes*2-1);
-				vehicles.get(l.get(i)).add(newVehicle);
-				counter++;
-				break;
-			}
-			else {
-				l.remove(i);
-			}
-		}
+
+//		ArrayList<Integer> l = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4));
+//		while (l != null) {
+//			int i = a.nextInt(l.size());
+//			if (vehicles.get(l.get(i)).size()==0) {
+//				vehicles.get(l.get(i)).add(newVehicle);
+//				counter++;
+//				break;
+//			}
+//			Vehicle lastVehicle = vehicles.get(l.get(i)).get(vehicles.get(l.get(i)).size()-1);
+//			if (newVehicle.px + 0.5*newVehicle.length < lastVehicle.px - 0.5*lastVehicle.length) {
+//				newVehicle.py = (l.get(i)*2+1)*this.roadWidth/(this.lanes*2-1);
+//				vehicles.get(l.get(i)).add(newVehicle);
+//				counter++;
+//				break;
+//			}
+//			else {
+//				l.remove(i);
+//			}
+//		}
 	}
         
 	public static void main(String[] args) {

@@ -1,3 +1,5 @@
+import sun.tools.jps.Jps;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -7,8 +9,10 @@ public class TrafficThread extends Thread{
 
     private JFrame jFrame;
     private boolean flag = true;
-    public static int refresh = 500;
+    public static int refresh = 500; // refresh time unit
+    public static int refreshTimes = 20;
     private TrafficSimulation trafficSimulation;
+
 
     public boolean isFlag() {
         return flag;
@@ -36,23 +40,22 @@ public class TrafficThread extends Thread{
     @Override
     public void run() {
         //run the simulation with Move method
-        if (flag){
+        HashMap<Integer,ArrayList<Vehicle>> vehicles = trafficSimulation.vehicles;
+//        while (flag){
+        for (int i = 0; i < refreshTimes ; i++){
             //Draw the road situation
-            trafficSimulation.road.removeAll();
-//            for (int i = 0; i < TrafficSimulation.lanes ; i ++){
-//                for (Vehicle v : trafficSimulation.vehicles.get(i)) {
-//                    trafficSimulation.road.addVehicle(v);
-//                }
-//            }
-            Car testCar = new Car(trafficSimulation.carLength, trafficSimulation.width, 0, 0, 2) {
-            };
-            trafficSimulation.road.addVehicle(testCar);
-            jFrame.repaint();
-            jFrame.add(trafficSimulation.road, BorderLayout.CENTER);
+            JPanel jPanel = trafficSimulation.road;
+            jPanel.repaint();
+            jFrame.add(jPanel,BorderLayout.CENTER);
             jFrame.setVisible(true);
+            // move for next tick
+            for (ArrayList<Vehicle> vs: vehicles.values()){
+                for (Vehicle v : vs){
+                    v.px += 30;
+                }
+            }
             try {
                 TrafficThread.sleep(refresh);
-                //move
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -17,10 +17,11 @@ public abstract class Vehicle {
 	public direction direction;//moving direction
 	public Driver driver;
 	public int SignalSwitchedDuration = 0;//Time(ticks) after switch on turn signal
+	public int lane;//current (or former in move) lane
 	
 	public boolean hasMoved;//whether has moved in current tick
 	public int frontVehicle;//the id of the front vehicle
-        public void paintMe(Graphics g){} //template for child
+        public void paintMe(double px, double py, Graphics g){} //template for child
         public int getX(){
             int px = (int) this.px;
             return px;

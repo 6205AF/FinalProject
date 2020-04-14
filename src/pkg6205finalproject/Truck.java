@@ -15,6 +15,7 @@ public class Truck extends Vehicle{
 	public direction direction;//moving direction
 	public Driver driver;//driver
 	public int SignalSwitchedDuration = 0;//Time(ticks) after switch on turn signal
+	public int lane;//current (or former in move) lane
 	
 	public boolean hasMoved;//whether has moved in current tick
 	
@@ -28,14 +29,14 @@ public class Truck extends Vehicle{
 		this.px = 0;
 		this.py = lane * Road.LANE_WIDTH;
 		this.direction = direction.forward;
+		this.lane = lane;
 	}
 
-	public void paintMe(Graphics g){
-		g.setColor(Color.YELLOW);
-		int px = (int) this.px;
-		int py = (int) this.py;
+	@Override
+	public void paintMe(double paintX, double paintY, Graphics g){
+		g.setColor(Color.BLUE);
 		int length = (int) this.length;
 		int width = (int) this.width;
-		g.fillRect(px,py,length,width);
+		g.fillRect((int)paintX,(int)paintY,length,width);
 	}
 }

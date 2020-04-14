@@ -13,16 +13,19 @@ public class Road extends JPanel{
     // lane 2 => py = 50 and etc
     public final static int LANE_WIDTH = 50;
     public final static int LANE_LENGTH = 1000;
+    private TrafficSimulation trafficSimulation;
     Random random = new Random();
     HashMap<Integer,ArrayList<Vehicle>> vehicles = new HashMap<Integer,ArrayList<Vehicle>>();
 
-    public Road(HashMap<Integer,ArrayList<Vehicle>> vehicles) {
+    public Road(TrafficSimulation trafficSimulation) {
         super();
-        this.vehicles = vehicles;
+        this.trafficSimulation = trafficSimulation;
+        this.vehicles = trafficSimulation.vehicles;
     }
+    //-----not necessary----
     public void addVehicle(Vehicle v){
-        int lane = random.nextInt(5);
-        vehicles.get(lane).add(v);
+//        int lane = random.nextInt(TrafficSimulation.lanes);
+        vehicles.get(v.lane).add(v);
         }
     
     public void paintComponent(Graphics g){
@@ -35,15 +38,14 @@ public class Road extends JPanel{
                 g.fillRect(b,a,30,2);
             }
         }
-      
+//        vehicles = trafficSimulation.vehicles;
         //Draw Vehicles
-        for (int i = 0;i<5;i++){
+        for (Integer i = 0; i<TrafficSimulation.lanes; i++){
             for (Vehicle v : vehicles.get(i)){
-                v.paintMe(g);
+                v.paintMe(v.px, v.py ,g);
+
             }
         }
-        
-        
     }
     
     public void step(){
@@ -53,4 +55,6 @@ public class Road extends JPanel{
             }
         }
     }
+
+
 }
