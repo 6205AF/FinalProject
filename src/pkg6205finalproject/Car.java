@@ -31,7 +31,7 @@ public class Car extends Vehicle{
 		this.acceleration = acceleration;
 		this.deceleration = deceleration;
 		this.px = 0;
-		this.py = lane * Road.LANE_WIDTH;
+		this.py = (lane+0.1) * Road.LANE_WIDTH ;
 		this.direction = direction.forward;
 		this.lane = lane;
 	}

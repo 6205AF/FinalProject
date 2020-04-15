@@ -1,6 +1,3 @@
-
-import sun.tools.jps.Jps;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridBagLayout;
@@ -23,7 +20,7 @@ public class TrafficSimulation {
 	public static int roadWidth = lanes * Road.LANE_WIDTH;//the width in pixels for each road;
 	public static int roadLength = Road.LANE_LENGTH;//the length in pixels for roads
 	public static double wetness = 1;//a ratio influences the speed, acceleration and deceleration of vehicles
-	public static int[] laneInFixing;//the numbers of lane is in fixing
+	public static int laneInFixing;//the numbers of lane is in fixing
 	public double speedLimit;//speed limit of the road
 
 	//settings of vehicles
@@ -70,20 +67,12 @@ public class TrafficSimulation {
 		boolean running = false;
 		//initialize attributes
 		this.road = new Road(this);
-		this.laneInFixing = new int[]{};
-		this.altruisticDriver = new Driver(true, cutInWaitingTimeA, maxSpeedA);
-		this.egoisticDriver = new Driver(false, cutInWaitingTimeE, maxSpeedE);
-		// ----------------special vehicle frequency should also be considered--------------------
-		if (this.hasSpeicalVehicle) {
-			this.specialVehicle = new SpecialVehicle(carLength, width, acceleration, deceleration);
-		}
-		// initilize vehicles of lanes
+		this.laneInFixing = 4;
+		// Initialize vehicles of lanes
 		for (Integer i = 0; i < lanes; i++){
 			vehicles.put(i,new ArrayList<Vehicle>());
 		}
-		spawn();
 //		spawn();
-
 	}
 
 	//calculate the positions of cars for next tick from current tick
@@ -128,61 +117,12 @@ public class TrafficSimulation {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// --------------CHECK---------------
-				simulation.spawn();
+				
 			}
 		});
 	}
 
-	// --------------------CHECK-----------------------
-	//spawn a new vehicle
-	public void spawn() {
-		Random a = new Random();
-		double vehicleType = a.nextDouble();
-		double driverType = a.nextDouble();
-		int newLane = a.nextInt(lanes);
-		Driver newDriver;
-		Vehicle newVehicle;
-		//decide which kind of driver is in the vehicle
-		if (driverType <= this.altruisticDriverRatio) {
-			newDriver = this.altruisticDriver;
-		}
-		else {
-			newDriver = this.egoisticDriver;
-		}
-		//decide which kind of vehicle should be spawned
-		if (vehicleType < this.truckRatio) {
-			newVehicle = new Truck(truckLength, width, acceleration, deceleration, newLane);
-		} else {
-			newVehicle = new Car(carLength,width,acceleration,deceleration,newLane);
-		}
-		newVehicle.driver = newDriver;
-		newVehicle.lane = newLane;
-		System.out.println(newLane);
-		vehicles.get(newLane).add(newVehicle);
-
-		//spawn new vehicle in a random possible lane
-
-//		ArrayList<Integer> l = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4));
-//		while (l != null) {
-//			int i = a.nextInt(l.size());
-//			if (vehicles.get(l.get(i)).size()==0) {
-//				vehicles.get(l.get(i)).add(newVehicle);
-//				counter++;
-//				break;
-//			}
-//			Vehicle lastVehicle = vehicles.get(l.get(i)).get(vehicles.get(l.get(i)).size()-1);
-//			if (newVehicle.px + 0.5*newVehicle.length < lastVehicle.px - 0.5*lastVehicle.length) {
-//				newVehicle.py = (l.get(i)*2+1)*this.roadWidth/(this.lanes*2-1);
-//				vehicles.get(l.get(i)).add(newVehicle);
-//				counter++;
-//				break;
-//			}
-//			else {
-//				l.remove(i);
-//			}
-//		}
-	}
-        
+	// --------------------CHECK-----------------------    
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		TrafficSimulation trafficSimulation = new TrafficSimulation();

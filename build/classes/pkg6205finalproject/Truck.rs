@@ -1,2 +1,0 @@
-Truck$direction
-Truck

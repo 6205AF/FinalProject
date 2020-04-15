@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 public class Road extends JPanel{
     
     // total 5 lanes are width 250, length 1000
-    // lane 1 => py = 0 rectanle start from left to right , top to bottom
+    // lane 1 => py = 0 rectangle start from left to right , top to bottom
     // lane 2 => py = 50 and etc
     public final static int LANE_WIDTH = 50;
     public final static int LANE_LENGTH = 1000;
@@ -22,11 +22,6 @@ public class Road extends JPanel{
         this.trafficSimulation = trafficSimulation;
         this.vehicles = trafficSimulation.vehicles;
     }
-    //-----not necessary----
-    public void addVehicle(Vehicle v){
-//        int lane = random.nextInt(TrafficSimulation.lanes);
-        vehicles.get(v.lane).add(v);
-        }
     
     public void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -38,23 +33,11 @@ public class Road extends JPanel{
                 g.fillRect(b,a,30,2);
             }
         }
-//        vehicles = trafficSimulation.vehicles;
         //Draw Vehicles
         for (Integer i = 0; i<TrafficSimulation.lanes; i++){
             for (Vehicle v : vehicles.get(i)){
                 v.paintMe(v.px, v.py ,g);
-
             }
         }
     }
-    
-    public void step(){
-        for (int i = 0;i<5;i++){
-            for (Vehicle v : vehicles.get(i)){
-                v.setX(v.getX()+v.getSpeed());
-            }
-        }
-    }
-
-
 }

@@ -1,19 +1,31 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Move {
 
     //move vehicles
-    public void move(HashMap<Integer,ArrayList<Vehicle>> vehicles, TrafficSimulation trafficSimulation) {
+    public void move(TrafficSimulation trafficSimulation) {
+    	setAllUnmoved(trafficSimulation);
         int[] n1 = {0,0}, n2 = {1,0}, n3 = {2,0}, n4 = {3,0}, n5 = {4,0};
-        while (n1[1] <= vehicles.get(0).size() &&
-                n2[1] <= vehicles.get(1).size() &&
-                n3[1] <= vehicles.get(2).size() &&
-                n4[1] <= vehicles.get(3).size() &&
-                n4[1] <= vehicles.get(4).size()) {
-            moveHelper(findMostForward(n1,findMostForward(n2,findMostForward(n3,findMostForward(n4,n5,vehicles),vehicles),vehicles),vehicles),vehicles,trafficSimulation);
+        while (n1[1] <= trafficSimulation.vehicles.get(0).size() &&
+                n2[1] <= trafficSimulation.vehicles.get(1).size() &&
+                n3[1] <= trafficSimulation.vehicles.get(2).size() &&
+                n4[1] <= trafficSimulation.vehicles.get(3).size() &&
+                n4[1] <= trafficSimulation.vehicles.get(4).size()) {
+            moveHelper(findMostForward(n1,findMostForward(n2,findMostForward(n3,findMostForward(n4,n5, trafficSimulation.vehicles), trafficSimulation.vehicles), trafficSimulation.vehicles), trafficSimulation.vehicles), trafficSimulation.vehicles,trafficSimulation);
+            spawn(trafficSimulation);
         }
     }
+    
+	public void setAllUnmoved(TrafficSimulation trafficSimulation) {
+		for (int i=0; i<trafficSimulation.vehicles.size();i++) {
+			for (int j=0; j<trafficSimulation.vehicles.get(i).size();j++) {
+				trafficSimulation.vehicles.get(i).get(j).hasMoved = false;
+			}
+		}
+	}
 
     //helper function for move()
     public void moveHelper(int[] n,HashMap<Integer,ArrayList<Vehicle>> vehicles, TrafficSimulation trafficSimulation) {
@@ -304,8 +316,8 @@ public class Move {
         //if left side has more space than right side
         if(leftFront.px >= rightFront.px) {
             //there is enough space to cut in
-            if(a.px + 0.5*a.length <= leftFront.px - 0.7*leftFront.length) {
-
+            if(a.px + a.length <= leftFront.px) {
+            	
             }
         }
     }
@@ -340,9 +352,53 @@ public class Move {
         return n2;
     }
 
+    ////spawn new vehicle in a random possible lane
+	public void spawn(TrafficSimulation trafficSimulation) {
+		Random a = new Random();
+		double vehicleType = a.nextDouble();
+		double driverType = a.nextDouble();
+		Driver newDriver = null;
+		Vehicle newVehicle = null;
+		//decide which kind of vehicle should be spawned
+		if (vehicleType < trafficSimulation.truckRatio) {
+			newVehicle =  new Truck(trafficSimulation.truckLength, trafficSimulation.width, trafficSimulation.acceleration*trafficSimulation.truckSpeedRatio,trafficSimulation.deceleration*trafficSimulation.truckSpeedRatio, 0);
+		}
+		else {
+			newVehicle = new Car(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
+		}	
+		//decide which kind of driver is in the vehicle	
+		if (driverType <= trafficSimulation.altruisticDriverRatio) {
+			newDriver = new Driver(true, trafficSimulation.cutInWaitingTimeA, trafficSimulation.maxSpeedA);
+		}
+		else {
+			newDriver =  new Driver(false, trafficSimulation.cutInWaitingTimeE, trafficSimulation.maxSpeedE);
+		}
+		newVehicle.driver = newDriver;
+		//spawn new vehicle in a random possible lane
+		ArrayList<Integer> l = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4));
+		while (l.size() != 0) {
+			int i = a.nextInt(l.size());
+			if (trafficSimulation.vehicles.get(l.get(i)).size()==0) {
+				newVehicle.py = l.get(i)*trafficSimulation.roadWidth/trafficSimulation.lanes + 0.1*trafficSimulation.roadWidth;
+				trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
+				trafficSimulation.counter++;
+				break;
+			}
+			Vehicle lastVehicle = trafficSimulation.vehicles.get(l.get(i)).get(trafficSimulation.vehicles.get(l.get(i)).size()-1);
+			if (newVehicle.px + 0.5*newVehicle.length < lastVehicle.px - 0.5*lastVehicle.length) {
+				newVehicle.py = l.get(i)*trafficSimulation.roadWidth/trafficSimulation.lanes + 0.1*trafficSimulation.roadWidth;
+				trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
+				trafficSimulation.counter++;
+				break;
+			}
+			else {
+				l.remove(i);
+			}
+		}
+	}
+	
     //remove a vehicle from the list of vehicles
     public void remove(int[] n, HashMap<Integer,ArrayList<Vehicle>> vehicles) {
-        int i=0,j=0;
         vehicles.get(n[0]).remove(n[1]);
     }
 
