@@ -34,6 +34,7 @@ public class Car extends Vehicle{
 		this.py = (lane+0.1) * Road.LANE_WIDTH ;
 		this.direction = direction.forward;
 		this.lane = lane;
+		System.out.println(this.py);
 	}
 
 	@Override

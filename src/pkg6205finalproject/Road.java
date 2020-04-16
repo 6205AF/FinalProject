@@ -33,6 +33,7 @@ public class Road extends JPanel{
                 g.fillRect(b,a,30,2);
             }
         }
+        vehicles = trafficSimulation.vehicles;
         //Draw Vehicles
         for (Integer i = 0; i<TrafficSimulation.lanes; i++){
             for (Vehicle v : vehicles.get(i)){

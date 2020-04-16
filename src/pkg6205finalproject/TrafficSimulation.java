@@ -1,3 +1,5 @@
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridBagLayout;
@@ -78,8 +80,13 @@ public class TrafficSimulation {
 			vehicles.put(i,new ArrayList<Vehicle>());
 			System.out.println(vehicles.get(i));
 		}
-
-//		spawn();
+//		double length, double width, double acceleration, double deceleration, int lane
+		System.out.println("try to add a test car");
+		Car testCar = new Car(carLength,width,acceleration,deceleration,3);
+		System.out.println(testCar.py);
+		Vehicle testV = testCar;
+		System.out.println(testV.py);
+//		move.spawn(this);
 	}
 
 	//calculate the positions of cars for next tick from current tick
