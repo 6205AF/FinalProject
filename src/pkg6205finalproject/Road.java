@@ -26,7 +26,9 @@ public class Road extends JPanel{
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         g.setColor(Color.BLACK);
-        g.fillRect(0,0,1000,250);//250*1000 rectangle,
+        g.fillRect(0,0,1000,200);//250*1000 rectangle,
+        g.fillRect(0,200,600,50);
+        g.fillPolygon(new int[]{600,600,660},new int[]{200,250,200},3);
         g.setColor(Color.WHITE);
         for (int a = 50; a <250;a+=50){ // 50*1000 lane, 5 lanes
             for(int b = 0;b<1000; b += 35){
