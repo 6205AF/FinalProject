@@ -84,8 +84,10 @@ public class TrafficSimulation {
 		System.out.println("try to add a test car");
 		Car testCar = new Car(carLength,width,acceleration,deceleration,3);
 		System.out.println(testCar.py);
-		Vehicle testV = testCar;
-		System.out.println(testV.py);
+                Vehicle testV = testCar;
+                
+                //Method method = testV.getClass().getMethod("");
+		System.out.println(testV.getY());
 //		move.spawn(this);
 	}
 

@@ -26,14 +26,21 @@ public abstract class Vehicle {
             int px = (int) this.px;
             return px;
         }
+        
+        public int getY(){
+            int py = (int) this.py;
+            return py;
+        }
+        
         public void setX(int newx){
-            px = newx+0.0;
         }
         
         public int getSpeed(){
             int v = (int) this.v;
             return v;
         }
+        
+        
 //	public void paintMe(Graphics g){
 //		g.setColor(Color.BLUE);
 //		int px = (int) this.px;

@@ -45,5 +45,24 @@ public class Car extends Vehicle{
 		g.fillRect((int)paintX,(int)paintY,length,width);
 	}
         
+        public int getX(){
+            int px = (int) this.px;
+            return px;
+        }
+        
+        public int getY(){
+            int py = (int) this.py;
+            return py;
+        }
+        
+        public void setX(int newx){
+            px = newx+0.0;
+        }
+        
+        public int getSpeed(){
+            int v = (int) this.v;
+            return v;
+        }
+        
 
 }
