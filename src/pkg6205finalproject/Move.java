@@ -31,7 +31,9 @@ public class Move {
 	public void moveHelper(int[] n,HashMap<Integer,ArrayList<Vehicle>> vehicles, TrafficSimulation trafficSimulation) {
 		Vehicle a = vehicles.get(n[0]).get(n[1]);
 		//if this vehicle reaches the end of the road
-		System.out.println(2);
+		System.out.println("[" + n[0]+ "," + n[1] + "]");
+		a.print();
+		System.out.println();
 		if (a.getPx() >= TrafficSimulation.roadLength) {
 			remove(n, vehicles);
 			trafficSimulation.counter--;
@@ -389,14 +391,14 @@ public class Move {
 		while (l.size() != 0) {
 			int i = a.nextInt(l.size());
 			if (trafficSimulation.vehicles.get(l.get(i)).size()==0) {
-				newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.roadWidth);
+				newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
 				trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
 				trafficSimulation.counter++;
 				break;
 			}
 			Vehicle lastVehicle = trafficSimulation.vehicles.get(l.get(i)).get(trafficSimulation.vehicles.get(l.get(i)).size()-1);
 			if (newVehicle.getPx() + newVehicle.getLength() < lastVehicle.getPx()) {
-				newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.roadWidth);
+				newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
 				trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
 				trafficSimulation.counter++;
 				break;

@@ -22,12 +22,13 @@ public abstract class Vehicle {
 		this.setAcceleration(acceleration);
 		this.setDeceleration(deceleration);
 		this.setPx(0);
-		this.setPy((0.1+lane)*Road.WIDTH);
+		this.setPy((0.1+lane)*Road.LANE_WIDTH);
 		this.setDirection("forward");
 	}
 	
 	public void print() {
-		System.out.println("px, py" + this.getPx() + ", " + this.getPy());
+		System.out.println("px:" + this.getPx());
+		System.out.println("py:" + this.getPy());
 		System.out.println("v:" + this.getV());
 		System.out.println("length:" + this.getLength());
 		System.out.println("acceleration:" + this.getAcceleration());
