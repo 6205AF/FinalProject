@@ -39,7 +39,7 @@ public class Road extends JPanel{
         //Draw Vehicles
         for (Integer i = 0; i<TrafficSimulation.lanes; i++){
             for (Vehicle v : vehicles.get(i)){
-                v.paintMe(v.px, v.py ,g);
+                v.paintMe(v.getX(), v.getY() ,g);
             }
         }
     }

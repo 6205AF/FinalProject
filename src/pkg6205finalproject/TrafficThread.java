@@ -37,7 +37,7 @@ public class TrafficThread extends Thread{
 			jFrame.add(jPanel,BorderLayout.CENTER);
 			jFrame.setVisible(true);
 			// move for next tick
-//			move.move(this.trafficSimulation);
+			move.move(this.trafficSimulation);
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

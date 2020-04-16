@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
 public class TrafficSimulation {
 
 	//settings of road
-	public Road road;
+	Road road;
 	public static int lanes = 5;//number of lanes of the road
 	public static int roadWidth = lanes * Road.LANE_WIDTH;//the width in pixels for each road;
 	public static int roadLength = Road.LANE_LENGTH;//the length in pixels for roads
@@ -72,23 +72,12 @@ public class TrafficSimulation {
 		this.road = new Road(this);
 		this.laneInFixing = 4;
 		// Initialize vehicles of lanes
-		//--------CHECK-------
 		System.out.println("initialize null ");
 		move = new Move();
 		vehicles = new HashMap<Integer,ArrayList<Vehicle>>();
 		for (Integer i = 0; i < lanes; i++){
 			vehicles.put(i,new ArrayList<Vehicle>());
-			System.out.println(vehicles.get(i));
 		}
-//		double length, double width, double acceleration, double deceleration, int lane
-		System.out.println("try to add a test car");
-		Car testCar = new Car(carLength,width,acceleration,deceleration,3);
-		System.out.println(testCar.py);
-                Vehicle testV = testCar;
-                
-                //Method method = testV.getClass().getMethod("");
-		System.out.println(testV.getY());
-//		move.spawn(this);
 	}
 
 	//calculate the positions of cars for next tick from current tick
