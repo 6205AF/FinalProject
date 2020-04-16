@@ -53,7 +53,8 @@ public class TrafficSimulation {
 	public double flow = 0;//number of vehicles pass in a certain time
 
 	//public Vehicle[][] vehicles = new Vehicle[][]{};//vehicles in screen
-	public HashMap<Integer,ArrayList<Vehicle>> vehicles = new HashMap<Integer,ArrayList<Vehicle>>();
+	public HashMap<Integer,ArrayList<Vehicle>> vehicles;
+	public Move move;
 
 	//instantiates
 	Driver altruisticDriver;
@@ -69,9 +70,15 @@ public class TrafficSimulation {
 		this.road = new Road(this);
 		this.laneInFixing = 4;
 		// Initialize vehicles of lanes
+		//--------CHECK-------
+		System.out.println("initialize null ");
+		move = new Move();
+		vehicles = new HashMap<Integer,ArrayList<Vehicle>>();
 		for (Integer i = 0; i < lanes; i++){
 			vehicles.put(i,new ArrayList<Vehicle>());
+			System.out.println(vehicles.get(i));
 		}
+
 //		spawn();
 	}
 
@@ -88,11 +95,9 @@ public class TrafficSimulation {
 		//south: button : start, stop, add car
 		JButton start = new JButton("Start");
 		JButton stop = new JButton("Stop");
-		JButton addcar = new JButton("Add Car");
 		JPanel panelSouth = new JPanel();
 		panelSouth.add(start);
 		panelSouth.add(stop);
-		panelSouth.add(addcar);
 		panelSouth.setVisible(true);
 		frame.add(panelSouth,BorderLayout.SOUTH);
 		frame.setVisible(true);
@@ -109,15 +114,6 @@ public class TrafficSimulation {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				trafficThread.stop();
-			}
-		});
-
-		//add car button event listener
-		addcar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// --------------CHECK---------------
-				
 			}
 		});
 	}

@@ -353,7 +353,7 @@ public class Move {
     }
 
     ////spawn new vehicle in a random possible lane
-	public void spawn(TrafficSimulation trafficSimulation) {
+	static public void spawn(TrafficSimulation trafficSimulation) {
 		Random a = new Random();
 		double vehicleType = a.nextDouble();
 		double driverType = a.nextDouble();
