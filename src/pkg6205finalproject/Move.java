@@ -140,9 +140,10 @@ public class Move {
 		if (vehicles.get(n[0]+1).size()==0) {}
 		else if (vehicles.get(n[0]+1).size()==1) {rightFront = vehicles.get(n[0]+1).get(0);}
 		else {
-			int i = 0;
+			//problem here: find right first vehicle from left lane
+                        int i = 0;
 			while (i<vehicles.get(n[0]+1).size()-1 && vehicles.get(n[0]+1).get(i+1).getPx() > a.getPx()) {i++;}
-			if (vehicles.get(n[0]+1).get(i+1).getPx() > a.getPx()) {i++;}
+			//if (vehicles.get(n[0]+1).get(i+1).getPx() > a.getPx()) {i++;}
 			rightFront = vehicles.get(n[0]+1).get(i);
 		}
 		//if this vehicle is the most forward vehicle in the road
