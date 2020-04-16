@@ -25,44 +25,41 @@ public class Car extends Vehicle{
 	public Car() {}
 
 	// initialize
-	public Car (double length, double width, double acceleration, double deceleration, int lane) {
-		this.length = length;
-		this.width = width;
-		this.acceleration = acceleration;
-		this.deceleration = deceleration;
-		this.px = 0;
-		this.py = (lane+0.1) * Road.LANE_WIDTH ;
-		this.direction = direction.forward;
-		this.lane = lane;
-		System.out.println(this.py);
+	public Car(double length, double width, double acceleration, double deceleration, int lane) {
+		super(length,width,acceleration, deceleration, lane);
+		this.setLength(length);
+		this.setWidth(width);
+		this.setAcceleration(acceleration);
+		this.setDeceleration(deceleration);
+		this.setPx(0);
+		this.setPy((0.1+lane)*Road.WIDTH);
+		this.setDirection("forward");
 	}
 
 	@Override
 	public void paintMe(double paintX, double paintY, Graphics g){
 		g.setColor(Color.BLUE);
-		int length = (int) this.length;
-		int width = (int) this.width;
+		int length = (int)this.getLength();
+		int width = (int)this.getWidth();
 		g.fillRect((int)paintX,(int)paintY,length,width);
 	}
         
         public int getX(){
-            int px = (int) this.px;
+            int px = (int)this.getPx();
             return px;
         }
         
         public int getY(){
-            int py = (int) this.py;
+            int py = (int)this.getPy();
             return py;
         }
         
         public void setX(int newx){
-            px = newx+0.0;
+            this.setPx(newx+0.0);
         }
         
         public int getSpeed(){
-            int v = (int) this.v;
+            int v = (int)this.getV();
             return v;
         }
-        
-
 }
