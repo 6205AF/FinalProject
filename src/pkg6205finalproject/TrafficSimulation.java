@@ -33,7 +33,7 @@ public class TrafficSimulation {
 	public static double deceleration = acceleration * 2;//maximum Vehicle deceleration per tick
 
 	//settings for drivers
-	public static double maxSpeedA = 0.5*carLength;//the maximum speed could reach for altruistic driver
+	public static double maxSpeedA = carLength;//the maximum speed could reach for altruistic driver
 	public static int cutInWaitingTimeA = 5;//start cutting in for x ticks after switch turn signal on for altruistic driver
 	public static double maxSpeedE = maxSpeedA * 1.2;//the maximum speed could reach for egoistic driver
 	public static int cutInWaitingTimeE = 1;//start cutting in for x ticks after switch turn signal on for egoistic driver
