@@ -52,7 +52,7 @@ public class TrafficSimulation {
 
 	//other data
 	public int counter = 0;//a counter of current number of vehicles in the graph
-	public double flow = 0;//number of vehicles pass in a certain time
+	public ArrayList<Integer> flow = new ArrayList<Integer>();//number of vehicles pass in a certain time
 
 	//vehicles in screen
 	public HashMap<Integer,ArrayList<Vehicle>> vehicles;
