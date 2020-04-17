@@ -10,7 +10,12 @@ public class Car extends Vehicle{
 	public double width;//Vehicle width
 	public double acceleration;//maximum acceleration per tick
 	public double deceleration;//maximum deceleration per tick
-	public String direction;
+	enum direction{
+		forward,
+		left,
+		right
+		}
+	public direction direction;//moving direction
 	public Driver driver;//driver
 	public int SignalSwitchedDuration = 0;//Time(ticks) after switch on turn signal
 	public int lane;//current (or former in move) lane
@@ -37,14 +42,6 @@ public class Car extends Vehicle{
 		int length = (int)this.getLength();
 		int width = (int)this.getWidth();
 		g.fillRect((int)paintX,(int)paintY,length,width);
-		if (getDirection().equals("left")){
-			g.setColor(Color.YELLOW);
-			g.fillRect((int)paintX,(int)paintY,12,12);
-		}
-		if (getDirection().equals("right")){
-			g.setColor(Color.YELLOW);
-			g.fillRect((int)paintX,(int)(paintY+width-12),12,12);
-		}
 	}
         
         public int getX(){
