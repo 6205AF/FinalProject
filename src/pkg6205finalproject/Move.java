@@ -79,7 +79,19 @@ public class Move {
 				if (a.getDirection() == "forward") {
 					//if the driver in vehicle a is an egoistic driver and the driver in front vehicle is not
 					if (a.getDriver().getMaxSpeed() > front.getDriver().getMaxSpeed()) {
-						if (leftFront == null || leftFront.getPx() >= rightFront.getPx()) {
+						if (leftFront == null) {
+							catchUp(a,front);
+							a.setDirection("left");
+							a.setPx(a.getPx()+0.8*a.getV());
+							a.setPy(a.getPy()-0.6*a.getV());
+						}
+						else if (rightFront == null) {
+							catchUp(a,front);
+							a.setDirection("right");
+							a.setPx(a.getPx()+0.8*a.getV());
+							a.setPy(a.getPy()+0.6*a.getV());
+						}
+						else if (leftFront.getPx() >= rightFront.getPx()) {
 							judge(a, front, leftFront, n, vehicles);
 						}
 						else {
@@ -282,7 +294,7 @@ public class Move {
 		//there is enough space between a and side vehicle
 		else if (a.getV() + 1.5*a.getLength() < side.getPx()) {
 			//determine the cut in direction and add a to that ArrayList<Vehicle>
-			if (a.getPy() > side.getPy()) {
+			if (a.getPx() > side.getPx()) {
 				judgeCuttingIn(a,front,side);
 				a.setDirection("left");
 				a.setHasMoved(true);
