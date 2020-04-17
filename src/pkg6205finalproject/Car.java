@@ -40,10 +40,13 @@ public class Car extends Vehicle{
 		if (getDirection().equals("left")){
 			g.setColor(Color.YELLOW);
 			g.fillRect((int)paintX,(int)paintY,12,12);
+			g.fillRect((int)(paintX+length-12),(int)paintY,12,12);
+
 		}
 		if (getDirection().equals("right")){
 			g.setColor(Color.YELLOW);
 			g.fillRect((int)paintX,(int)(paintY+width-12),12,12);
+			g.fillRect((int)(paintX+length-12),(int)(paintY+width-12),12,12);
 		}
 	}
         
