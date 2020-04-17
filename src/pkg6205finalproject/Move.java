@@ -13,18 +13,10 @@ public class Move {
 				n2[1] < trafficSimulation.vehicles.get(1).size() ||
 				n3[1] < trafficSimulation.vehicles.get(2).size() ||
 				n4[1] < trafficSimulation.vehicles.get(3).size() ||
-				n4[1] < trafficSimulation.vehicles.get(4).size()) {
+				n5[1] < trafficSimulation.vehicles.get(4).size()) {
 			moveHelper(findMostForward(n1,findMostForward(n2,findMostForward(n3,findMostForward(n4,n5, trafficSimulation.vehicles), trafficSimulation.vehicles), trafficSimulation.vehicles), trafficSimulation.vehicles), trafficSimulation.vehicles,trafficSimulation);
 		}
 		spawn(trafficSimulation);
-	}
-
-	public void setAllUnmoved(TrafficSimulation trafficSimulation) {
-		for (int i=0; i<trafficSimulation.vehicles.size();i++) {
-			for (int j=0; j<trafficSimulation.vehicles.get(i).size();j++) {
-				trafficSimulation.vehicles.get(i).get(j).setHasMoved(false);
-			}
-		}
 	}
 
 	//helper function for move()
@@ -54,15 +46,13 @@ public class Move {
 			else {
 				int i = 0;
 				while (i<vehicles.get(n[0]-1).size()-1 && vehicles.get(n[0]-1).get(i+1).getPx() > a.getPx()) {i++;}
-				if (vehicles.get(n[0]-1).get(i+1).getPx() > a.getPx()) {i++;}
-				leftFront = vehicles.get(n[0]+1).get(i);
+				leftFront = vehicles.get(n[0]-1).get(i);
 			}
 			if (vehicles.get(n[0]+1).size()==0) {}
 			else if (vehicles.get(n[0]+1).size()==1) {rightFront = vehicles.get(n[0]+1).get(0);}
 			else {
 				int i = 0;
 				while (i<vehicles.get(n[0]+1).size()-1 && vehicles.get(n[0]+1).get(i+1).getPx() > a.getPx()) {i++;}
-				if (vehicles.get(n[0]+1).get(i+1).getPx()> a.getPx()) {i++;}
 				rightFront = vehicles.get(n[0]+1).get(i);
 			}
 			//if this vehicle is the most forward vehicle in current lane
@@ -142,7 +132,6 @@ public class Move {
 		else {
 			int i = 0;
 			while (i<vehicles.get(n[0]+1).size()-1 && vehicles.get(n[0]+1).get(i+1).getPx() > a.getPx()) {i++;}
-			if (vehicles.get(n[0]+1).get(i+1).getPx() > a.getPx()) {i++;}
 			rightFront = vehicles.get(n[0]+1).get(i);
 		}
 		//if this vehicle is the most forward vehicle in the road
@@ -191,12 +180,17 @@ public class Move {
 
 	public void RightSideHelper(int[] n,HashMap<Integer,ArrayList<Vehicle>> vehicles, TrafficSimulation trafficSimulation) {
 		Vehicle a = vehicles.get(n[0]).get(n[1]);
-		int i = 0;
-		while (i<vehicles.get(n[0]-1).size() && vehicles.get(n[0]-1).get(i+1).getPx() > a.getPx()) {i++;}
-		Vehicle leftFront = vehicles.get(n[0]-1).get(i);
+		Vehicle leftFront = null;
+		if (vehicles.get(n[0]-1).size()==0) {}
+		else if (vehicles.get(n[0]-1).size()==1) {leftFront = vehicles.get(n[0]-1).get(0);}
+		else {
+			int i = 0;
+			while (i<vehicles.get(n[0]-1).size()-1 && vehicles.get(n[0]-1).get(i+1).getPx() > a.getPx()) {i++;}
+			leftFront = vehicles.get(n[0]-1).get(i);
+		}
 		//if this vehicle is the most forward vehicle in the road
 		if(n[1]==0) {
-			if (a.getDirection() == "forward") {
+			if (a.getDirection().equals("forward")) {
 				speedUp(a);
 				a.setPx(a.getPx()+a.getV());
 			}
@@ -210,7 +204,7 @@ public class Move {
 		else {
 			Vehicle front = vehicles.get(n[0]).get(n[1]-1);
 			//if this vehicle is moving forward
-			if (a.getDirection() == "forward") {
+			if (a.getDirection().equals("forward")) {
 				//if the driver in vehicle a is an egoistic driver and the driver in front vehicle is not
 				if (a.getDriver().getMaxSpeed() > front.getDriver().getMaxSpeed()) {
 					judge(a, front, leftFront, n, vehicles);
@@ -336,27 +330,26 @@ public class Move {
 
 	//find the most forward vehicle
 	public int[] findMostForward(int[] n1,int[] n2,HashMap<Integer,ArrayList<Vehicle>> vehicles) {
-		//if either list reaches end
-		if (vehicles.get(n1[0]).size()==n1[1]) {
+		//if all vehicles in n1 has moved or n1 has moved
+		if (vehicles.get(n1[0]).size()<=n1[1] || vehicles.get(n1[0]).get(n1[1]).isHasMoved()) {
 			return n2;
 		}
-		else if (vehicles.get(n2[0]).size()==n2[1]) {
+		//if all vehicles in n2 has moved
+		else if (vehicles.get(n2[0]).size()<=n2[1]) {
 			return n1;
 		}
-		//if two vehicles are the same
+		//if two vehicles are the same(this vehicle is cutting to left or right)
 		else if (vehicles.get(n1[0]).get(n1[1]).equals(vehicles.get(n2[0]).get(n2[1]))) {
-			//if vehicle direction is left
+			//if vehicle is cutting left
 			if (vehicles.get(n1[0]).get(n1[1]).getDirection() == "left") {
 				n1[1]++;
 				return n2;
 			}
+			//vehicle is cutting right
 			else {
 				n2[1]++;
 				return n1;
 			}
-		}
-		else if (vehicles.get(n1[0]).get(n1[1]).isHasMoved()) {
-			return n2;
 		}
 		else if (vehicles.get(n1[0]).get(n1[1]).getPx()>=vehicles.get(n2[0]).get(n2[1]).getPx()) {
 			return n1;
@@ -423,5 +416,13 @@ public class Move {
 			//            }
 		}
 		return false;
+	}
+
+	public void setAllUnmoved(TrafficSimulation trafficSimulation) {
+		for (int i=0; i<trafficSimulation.vehicles.size();i++) {
+			for (int j=0; j<trafficSimulation.vehicles.get(i).size();j++) {
+				trafficSimulation.vehicles.get(i).get(j).setHasMoved(false);
+			}
+		}
 	}
 }

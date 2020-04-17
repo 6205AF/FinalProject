@@ -54,7 +54,7 @@ public class TrafficSimulation {
 	public int counter = 0;//a counter of current number of vehicles in the graph
 	public double flow = 0;//number of vehicles pass in a certain time
 
-	//public Vehicle[][] vehicles = new Vehicle[][]{};//vehicles in screen
+	//vehicles in screen
 	public HashMap<Integer,ArrayList<Vehicle>> vehicles;
 	public Move move;
 
