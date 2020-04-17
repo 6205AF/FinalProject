@@ -39,7 +39,7 @@ public class TrafficThread extends Thread{
 			// move for next tick
 			move.move(this.trafficSimulation);
 			try {
-				Thread.sleep(300);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

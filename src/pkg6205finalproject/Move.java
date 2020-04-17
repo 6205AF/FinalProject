@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Move {
-	
+
 	//move vehicles
 	public void move(TrafficSimulation trafficSimulation) {
 		setAllUnmoved(trafficSimulation);
@@ -110,8 +110,8 @@ public class Move {
 					a.setPx(a.getPx()+0.8*a.getV());
 					a.setPy(a.getPy()-0.6*a.getV());
 					//if a has completed cutting in
-					if (a.getPy() <= (0.1+n[0]-1)*Road.WIDTH) {
-						a.setPy((0.1+n[0]-1)*Road.WIDTH);
+					if (a.getPy() <= (0.1+n[0]-1)*Road.LANE_WIDTH) {
+						a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
 						a.setDirection("forward");
 						remove(n,vehicles);
 						n[1]--;
@@ -123,8 +123,8 @@ public class Move {
 					a.setPx(a.getPx()+0.8*a.getV());
 					a.setPy(a.getPy()+0.6*a.getV());
 					//if a has completed cutting in
-					if (a.getPy() >= (0.1+n[0]+1)*Road.WIDTH) {
-						a.setPy((0.1+n[0]-1)*Road.WIDTH);
+					if (a.getPy() >= (0.1+n[0]+1)*Road.LANE_WIDTH) {
+						a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
 						a.setDirection("forward");
 						remove(n,vehicles);
 						n[1]--;
@@ -180,8 +180,8 @@ public class Move {
 				a.setPx(a.getPx()+0.8*a.getV());
 				a.setPy(a.getPy()+0.6*a.getV());
 				//if a has completed cutting in
-				if (a.getPy() >= (0.1+n[0])*Road.WIDTH) {
-					a.setPy((0.1+n[0])*Road.WIDTH);
+				if (a.getPy() >= (0.1+n[0])*Road.LANE_WIDTH) {
+					a.setPy((0.1+n[0])*Road.LANE_WIDTH);
 					a.setDirection("forward");
 					remove(n, vehicles);
 				}
@@ -195,12 +195,31 @@ public class Move {
 	public void RightSideHelper(int[] n,HashMap<Integer,ArrayList<Vehicle>> vehicles, TrafficSimulation trafficSimulation) {
 		Vehicle a = vehicles.get(n[0]).get(n[1]);
 		Vehicle leftFront = null;
+		int i = 0;
 		if (vehicles.get(n[0]-1).size()==0) {}
-		else if (vehicles.get(n[0]-1).size()==1) {leftFront = vehicles.get(n[0]-1).get(0);}
 		else {
-			int i = 0;
 			while (i<vehicles.get(n[0]-1).size()-1 && vehicles.get(n[0]-1).get(i+1).getPx() > a.getPx()) {i++;}
 			leftFront = vehicles.get(n[0]-1).get(i);
+		}
+		//if this vehicle has to merge left
+		if (a.getPx()>=400 && a.getDirection().equals("forward")) {
+			if(leftFront==null) {
+				vehicles.get(n[0]-1).add(0,a);
+			}
+			else {
+				vehicles.get(n[0]-1).add(i+1,a);
+			}
+			a.setDirection("left");
+			judgeCuttingIn(a,null,leftFront);
+			a.setPx(a.getPx()+0.8*a.getV());
+			a.setPy(a.getPy()-0.6*a.getV());
+			//if a has completed cutting in
+			if (a.getPy() <= (0.1+n[0]-1)*Road.LANE_WIDTH) {
+				a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
+				a.setDirection("forward");
+				remove(n, vehicles);
+				n[1]--;
+			}
 		}
 		//if this vehicle is the most forward vehicle in the road
 		if(n[1]==0) {
@@ -212,6 +231,13 @@ public class Move {
 				judgeForward(a,leftFront);
 				a.setPx(a.getPx()+0.8*a.getV());
 				a.setPy(a.getPy()-0.6*a.getV());
+				//if a has completed cutting in
+				if (a.getPy() <= (0.1+n[0]-1)*Road.LANE_WIDTH) {
+					a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
+					a.setDirection("forward");
+					remove(n, vehicles);
+					n[1]--;
+				}
 			}
 		}
 		//there is vehicle in front of a
@@ -235,8 +261,8 @@ public class Move {
 				a.setPx(a.getPx()+0.8*a.getV());
 				a.setPy(a.getPy()-0.6*a.getV());
 				//if a has completed cutting in
-				if (a.getPy() <= (0.1+n[0]-1)*Road.WIDTH) {
-					a.setPy((0.1+n[0]-1)*Road.WIDTH);
+				if (a.getPy() <= (0.1+n[0]-1)*Road.LANE_WIDTH) {
+					a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
 					a.setDirection("forward");
 					remove(n, vehicles);
 					n[1]--;
@@ -346,7 +372,7 @@ public class Move {
 	//find the most forward vehicle
 	public int[] findMostForward(int[] n1,int[] n2,HashMap<Integer,ArrayList<Vehicle>> vehicles) {
 		//if all vehicles in n1 has moved or n1 has moved
-		if (vehicles.get(n1[0]).size()<=n1[1] || vehicles.get(n1[0]).get(n1[1]).isHasMoved()) {
+		if (vehicles.get(n1[0]).size()<=n1[1]) {
 			return n2;
 		}
 		//if all vehicles in n2 has moved
@@ -365,6 +391,14 @@ public class Move {
 				n2[1]++;
 				return n1;
 			}
+		}
+		else if (vehicles.get(n1[0]).get(n1[1]).isHasMoved()) {
+			n1[1]++;
+			return findMostForward(n1,n2,vehicles);
+		}
+		else if (vehicles.get(n2[0]).get(n2[1]).isHasMoved()) {
+			n1[2]++;
+			return findMostForward(n1,n2,vehicles);
 		}
 		else if (vehicles.get(n1[0]).get(n1[1]).getPx()>=vehicles.get(n2[0]).get(n2[1]).getPx()) {
 			return n1;
