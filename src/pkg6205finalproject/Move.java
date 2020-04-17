@@ -235,7 +235,10 @@ public class Move {
 		if (vehicles.get(n[0]-1).size()==0) {}
 		else {
 			while (i<vehicles.get(n[0]-1).size()-1 && vehicles.get(n[0]-1).get(i+1).getPx() > a.getPx()) {i++;}
-			if (vehicles.get(n[0]-1).get(i).getPx()<a.getPx()) {
+			if (vehicles.get(n[0]-1).get(i).equals(a) && i < vehicles.get(n[0]-1).size()-1) {
+				leftBehind = vehicles.get(n[0]-1).get(i+1);
+			}
+			else if (vehicles.get(n[0]-1).get(i).getPx()<a.getPx()) {
 				leftBehind = vehicles.get(n[0]-1).get(i);
 			}
 			else {
