@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Road extends JPanel{
     
@@ -14,6 +15,8 @@ public class Road extends JPanel{
     public final static int LANE_WIDTH = 50;
     public final static int LANE_LENGTH = 1000;
     private TrafficSimulation trafficSimulation;
+    JTextField counterTxt;
+    JTextField flowTxt;
     Random random = new Random();
     HashMap<Integer,ArrayList<Vehicle>> vehicles = new HashMap<Integer,ArrayList<Vehicle>>();
 
@@ -21,6 +24,10 @@ public class Road extends JPanel{
         super();
         this.trafficSimulation = trafficSimulation;
         this.vehicles = trafficSimulation.vehicles;
+        this.counterTxt = new JTextField();
+        this.flowTxt = new JTextField();
+        this.add(counterTxt);
+        this.add(flowTxt);
     }
     
     public void paintComponent(Graphics g){

@@ -23,6 +23,7 @@ public class TrafficThread extends Thread{
 	public TrafficThread(JFrame jFrame, TrafficSimulation trafficSimulation){
 		this.jFrame = jFrame;
 		this.trafficSimulation = trafficSimulation;
+                
 	}
 
 	@Override
@@ -33,6 +34,9 @@ public class TrafficThread extends Thread{
 		while (true){
 			//Draw the road situation
 			JPanel jPanel = trafficSimulation.road;
+                        trafficSimulation.road.counterTxt.setText(trafficSimulation.counter+"");
+                        double f = trafficSimulation.flow.isEmpty()? 0:(trafficSimulation.flow.get(0)/30);
+                        trafficSimulation.road.flowTxt.setText(f+"");
 			jPanel.repaint();
 			jFrame.add(jPanel,BorderLayout.CENTER);
 			jFrame.setVisible(true);
