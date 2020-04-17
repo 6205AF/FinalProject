@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Move {
-
+	
 	//move vehicles
 	public void move(TrafficSimulation trafficSimulation) {
 		setAllUnmoved(trafficSimulation);
@@ -101,6 +101,7 @@ public class Move {
 					else {
 						//judge the situation
 						judgeForward(a, front);
+						a.setPx(a.getPx()+a.getV());
 					}
 				}
 				//a is cutting to left
@@ -170,6 +171,7 @@ public class Move {
 				else {
 					//judge the situation
 					judgeForward(a, front);
+					a.setPx(a.getPx()+a.getV());
 				}
 			}
 			//a is cutting to right
@@ -224,6 +226,7 @@ public class Move {
 				else {
 					//judge the situation
 					judgeForward(a, front);
+					a.setPx(a.getPx()+a.getV());
 				}
 			}
 			//a is cutting to left
