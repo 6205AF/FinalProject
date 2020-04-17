@@ -35,7 +35,7 @@ public class TrafficThread extends Thread{
 			//Draw the road situation
 			JPanel jPanel = trafficSimulation.road;
                         trafficSimulation.road.counterTxt.setText(trafficSimulation.counter+"");
-                        double f = trafficSimulation.flow.isEmpty()? 0:(trafficSimulation.flow.get(0)/30);
+                        double f = trafficSimulation.flow.isEmpty()? 0:(trafficSimulation.flow.get(0));
                         trafficSimulation.road.flowTxt.setText(f+"");
 			jPanel.repaint();
 			jFrame.add(jPanel,BorderLayout.CENTER);
