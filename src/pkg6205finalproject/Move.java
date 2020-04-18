@@ -292,10 +292,11 @@ public class Move {
 					remove(n, vehicles);
 					n[1]--;
 				}
+				a.setHasMoved(true);
+				n[1]++;
+				return ;
 			}
-			a.setHasMoved(true);
-			n[1]++;
-			return ;
+
 		}
 
 		//if this vehicle is the most forward vehicle in the road
