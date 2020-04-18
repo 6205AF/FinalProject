@@ -3,6 +3,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
+/*
+ * comment lines 281-300 to stop forcing vehicles merge to left, also need to modify Road.java
+ * comment lines 546-574 to stop spawning special vehicles
+ * comment lines 579-584 and uncomment line 592 to stop spawning turcks
+ */
+
 public class Move {
 
 	//move vehicles
@@ -293,7 +299,7 @@ public class Move {
 			}
 		}
 		//if this vehicle is the most forward vehicle in the road
-		else if(n[1]==0) {
+		if(n[1]==0) {
 			if (a.getDirection().equals("forward")) {
 				speedUp(a);
 				a.setPx(a.getPx()+a.getV());
@@ -583,6 +589,7 @@ public class Move {
 			else {
 				d = new Driver(false, trafficSimulation.cutInWaitingTimeE, trafficSimulation.maxSpeedE);
 			}
+//			newVehicle = new Car(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
 			newVehicle.setDriver(d);
 			//spawn new vehicle in a random possible lane
 			while (l.size() != 0) {
@@ -633,28 +640,20 @@ public class Move {
 		}
 	}
 
-	//remove a vehicle from the list of vehicles
+	//remove a vehicle from hashMap<Integer,ArrayList<Vehicle> by giving a int[2]
 	public void remove(int[] n, HashMap<Integer,ArrayList<Vehicle>> vehicles) {
 		vehicles.get(n[0]).remove(n[1]);
 	}
 
+	//update the flow
 	public void updateFlow(TrafficSimulation ts) {
 		if (ts.flow.size() == ts.specialVehicleFrequency) {
 			ts.flow.remove(0);
 		}
 		ts.flow.add(0);
 	}
-	//Whether there is special vehicle on road
-	public boolean hasSpecialVehicle(Vehicle[] vehicles)  {
-		for (int i = 0; i < vehicles.length; i++) {
-			//----------------------
-			//            if (vehicles[i].getClass() == this.specialVehicle.getClass()) {
-			//                return true;
-			//            }
-		}
-		return false;
-	}
 
+	//set all vehicles unmoved
 	public void setAllUnmoved(TrafficSimulation trafficSimulation) {
 		for (int i=0; i<trafficSimulation.vehicles.size();i++) {
 			for (int j=0; j<trafficSimulation.vehicles.get(i).size();j++) {
