@@ -366,10 +366,13 @@ public class Move {
 		if (sideBehind == null) {
 			judgeForward(a,sideFront);
 		}
-		if (front == null && sideFront == null) {
+		else if (front == null && sideFront == null || a.getPx()>=sideFront.getPx()) {
 			speedUp(a);
 		}
-		if (a.getDirection()=="left" && sideBehind.getDirection()=="right" ||
+		else if (a.equals(sideFront)) {
+			speedUp(a);
+		}
+		else if (a.getDirection()=="left" && sideBehind.getDirection()=="right" ||
 				a.getDirection()=="right"&& sideBehind.getDirection()=="left") {
 			judgeForward(a,sideFront);
 		}
