@@ -42,7 +42,7 @@ public class TrafficSimulation {
 
 	//other settings
 	public double altruisticDriverRatio = 1;//ratio of altruistic driver among all drivers
-	public double truckRatio = 0;//ratio of trucks compares to cars
+	public double truckRatio = 0.05;//ratio of trucks compares to cars
 	public double truckSpeedRatio = 1;//ratio of acceleration and deceleration of truck to car
 	public double frames = 30;//number of frames for one second
 	public double vehicleSpace = carLength * 0.2;
