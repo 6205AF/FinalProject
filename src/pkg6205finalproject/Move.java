@@ -593,13 +593,10 @@ public class Move {
 			else {
 				d = new Driver(false, trafficSimulation.cutInWaitingTimeE, trafficSimulation.maxSpeedE);
 			}
-<<<<<<< HEAD
 			if (trafficSimulation.situationNumber != 3){
 				newVehicle = new Car(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
 			}
 
-=======
->>>>>>> f5ddc68acdff3f04f321536aa1a0b5c8293eb6b4
 			newVehicle.setDriver(d);
 			//spawn new vehicle in a random possible lane
 			while (l.size() != 0) {
