@@ -8,6 +8,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
+/*
+ * change line 54 from
+ * g.fillRect(0,0,1000,200);
+ * to
+ * g.fillRect(0,0,1000,250);
+ * and comment out line 55,56 to make gui 5 lanes
+ */
+
 public class Road extends JPanel{
     
     // total 5 lanes are width 250, length 1000

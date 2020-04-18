@@ -293,7 +293,7 @@ public class Move {
 			}
 		}
 		//if this vehicle is the most forward vehicle in the road
-		if(n[1]==0) {
+		else if(n[1]==0) {
 			if (a.getDirection().equals("forward")) {
 				speedUp(a);
 				a.setPx(a.getPx()+a.getV());
