@@ -29,7 +29,7 @@ public class Truck extends Vehicle{
 
 	@Override
 	public void paintMe(double paintX, double paintY, Graphics g){
-		g.setColor(Color.BLUE);
+		g.setColor(Color.green);
 		int length = (int)this.getLength();
 		int width = (int)this.getWidth();
 		g.fillRect((int)paintX,(int)paintY,length,width);
