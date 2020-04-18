@@ -277,27 +277,30 @@ public class Move {
 				}
 			}
 		}
-		//if this vehicle has to merge left
-		if (a.getPx()>=400 && a.getDirection().equals("forward")) {
-			if(leftFront==null) {
-				vehicles.get(n[0]-1).add(0,a);
-			}
-			else {
-				vehicles.get(n[0]-1).add(i+1,a);
-			}
-			a.setDirection("left");
-			a.setV(trafficSimulation.deceleration);
-			judgeCuttingIn(a,null,leftFront,leftBehind);
-			a.setPx(a.getPx()+0.8*a.getV());
-			a.setPy(a.getPy()-0.6*a.getV());
-			//if a has completed cutting in
-			if (a.getPy() <= (0.1+n[0]-1)*Road.LANE_WIDTH) {
-				a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
-				a.setDirection("forward");
-				remove(n, vehicles);
-				n[1]--;
+		if (trafficSimulation.situationNumber == 1 || trafficSimulation.situationNumber == 3){
+			//if this vehicle has to merge left
+			if (a.getPx()>=400 && a.getDirection().equals("forward")) {
+				if(leftFront==null) {
+					vehicles.get(n[0]-1).add(0,a);
+				}
+				else {
+					vehicles.get(n[0]-1).add(i+1,a);
+				}
+				a.setDirection("left");
+				a.setV(trafficSimulation.deceleration);
+				judgeCuttingIn(a,null,leftFront,leftBehind);
+				a.setPx(a.getPx()+0.8*a.getV());
+				a.setPy(a.getPy()-0.6*a.getV());
+				//if a has completed cutting in
+				if (a.getPy() <= (0.1+n[0]-1)*Road.LANE_WIDTH) {
+					a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
+					a.setDirection("forward");
+					remove(n, vehicles);
+					n[1]--;
+				}
 			}
 		}
+
 		//if this vehicle is the most forward vehicle in the road
 		if(n[1]==0) {
 			if (a.getDirection().equals("forward")) {
@@ -543,45 +546,52 @@ public class Move {
 		ArrayList<Integer> l = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4));
 		Driver d = null;
 		Vehicle newVehicle = null;
-		if (trafficSimulation.timeToSpawnSpecialVehicle >= TrafficSimulation.specialVehicleFrequency) {
-			newVehicle = new SpecialVehicle(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
-			d = new Driver(false, trafficSimulation.cutInWaitingTimeE, trafficSimulation.maxSpeedE);
-			newVehicle.setDriver(d);
-			l = new ArrayList<Integer>(Arrays.asList(1,2));
-			while (l.size() != 0) {
-				int i = a.nextInt(l.size());
-				if (trafficSimulation.vehicles.get(l.get(i)).size()==0) {
-					newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
-					trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
-					trafficSimulation.counter++;
-					trafficSimulation.timeToSpawnSpecialVehicle = 0;
-					return;
-				}
-				else {
-					Vehicle lastVehicle = trafficSimulation.vehicles.get(l.get(i)).get(trafficSimulation.vehicles.get(l.get(i)).size()-1);
-					if (newVehicle.getPx() + newVehicle.getLength() < lastVehicle.getPx()) {
+		if (trafficSimulation.situationNumber == 3 || trafficSimulation.situationNumber ==4){
+			if (trafficSimulation.timeToSpawnSpecialVehicle >= TrafficSimulation.specialVehicleFrequency) {
+				newVehicle = new SpecialVehicle(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
+				d = new Driver(false, trafficSimulation.cutInWaitingTimeE, trafficSimulation.maxSpeedE);
+				newVehicle.setDriver(d);
+				l = new ArrayList<Integer>(Arrays.asList(1,2));
+				while (l.size() != 0) {
+					int i = a.nextInt(l.size());
+					if (trafficSimulation.vehicles.get(l.get(i)).size()==0) {
 						newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
-						forceSwitch(l.get(i),trafficSimulation);
 						trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
 						trafficSimulation.counter++;
 						trafficSimulation.timeToSpawnSpecialVehicle = 0;
 						return;
 					}
-					else l.remove(i);
+					else {
+						Vehicle lastVehicle = trafficSimulation.vehicles.get(l.get(i)).get(trafficSimulation.vehicles.get(l.get(i)).size()-1);
+						if (newVehicle.getPx() + newVehicle.getLength() < lastVehicle.getPx()) {
+							newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
+							forceSwitch(l.get(i),trafficSimulation);
+							trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
+							trafficSimulation.counter++;
+							trafficSimulation.timeToSpawnSpecialVehicle = 0;
+							return;
+						}
+						else l.remove(i);
+					}
 				}
+				return;
 			}
-			return;
 		}
+
+
 		while (l.size() != 0) {
 			double vehicleType = a.nextDouble();
 			double driverType = a.nextDouble();
 			//decide which kind of vehicle should be spawned
-			if (trafficSimulation.nextTruck) {
-				newVehicle =  new Truck(trafficSimulation.truckLength, trafficSimulation.width, trafficSimulation.acceleration*trafficSimulation.truckSpeedRatio,trafficSimulation.deceleration*trafficSimulation.truckSpeedRatio, 0);
+			if (trafficSimulation.situationNumber == 3){
+				if (trafficSimulation.nextTruck) {
+					newVehicle =  new Truck(trafficSimulation.truckLength, trafficSimulation.width, trafficSimulation.acceleration*trafficSimulation.truckSpeedRatio,trafficSimulation.deceleration*trafficSimulation.truckSpeedRatio, 0);
+				}
+				else {
+					newVehicle = new Car(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
+				}
 			}
-			else {
-				newVehicle = new Car(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
-			}
+
 			//decide which kind of driver is in the vehicle	
 			if (driverType <= trafficSimulation.altruisticDriverRatio) {
 				d = new Driver(true, trafficSimulation.cutInWaitingTimeA, trafficSimulation.maxSpeedA);
@@ -589,7 +599,10 @@ public class Move {
 			else {
 				d = new Driver(false, trafficSimulation.cutInWaitingTimeE, trafficSimulation.maxSpeedE);
 			}
-//			newVehicle = new Car(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
+			if (trafficSimulation.situationNumber != 3){
+				newVehicle = new Car(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
+			}
+
 			newVehicle.setDriver(d);
 			//spawn new vehicle in a random possible lane
 			while (l.size() != 0) {

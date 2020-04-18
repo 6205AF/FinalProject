@@ -51,6 +51,7 @@ public class TrafficSimulation {
 	public int counter = 0;//a counter of current number of vehicles in the graph
 	public ArrayList<Integer> flow = new ArrayList<Integer>();//number of vehicles pass in a certain time
 	public boolean nextTruck = false;//whether next vehicle being spawned is truck
+	public int situationNumber;
 
 	//vehicles in screen
 	public HashMap<Integer,ArrayList<Vehicle>> vehicles;
@@ -87,32 +88,55 @@ public class TrafficSimulation {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		//south: button : start, stop, add car
+		JComboBox situations = new JComboBox();
+		situations.addItem("4 lanes");
+		situations.addItem("5 lanes");
+		situations.addItem("4 lanes + special vehicle + truck");
+		situations.addItem("5 lanes + special vehicl");
 		JButton start = new JButton("Start");
 		JButton stop = new JButton("Stop");
 		JPanel panelSouth = new JPanel();
+		panelSouth.add(situations);
 		panelSouth.add(start);
 		panelSouth.add(stop);
 		panelSouth.setVisible(true);
 		frame.add(panelSouth,BorderLayout.SOUTH);
 		frame.setVisible(true);
+
 		TrafficThread trafficThread = new TrafficThread(frame,simulation);
-		//start button event listerner
+
+
+
 		start.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				trafficThread.start();
+				String currentSituation = situations.getSelectedItem().toString();
+				if (currentSituation.equals("4 lanes")){
+					situationNumber = 1;
+				};
+
+				if (currentSituation.equals("5 lanes")){
+					situationNumber = 2;
+				}
+				if (currentSituation.equals("4 lanes + special vehicle + truck")){
+					situationNumber = 3;
+				}
+				if (currentSituation.equals("5 lanes + special vehicle")) {
+					situationNumber = 4;
+				}
+					trafficThread.start();
 			}
 		});
-		//stop button event listener
 		stop.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				trafficThread.stop();
+
 			}
 		});
+
 	}
 
-	// --------------------CHECK-----------------------    
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		TrafficSimulation trafficSimulation = new TrafficSimulation();
