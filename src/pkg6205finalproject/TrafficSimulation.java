@@ -37,22 +37,20 @@ public class TrafficSimulation {
 	public static int cutInWaitingTimeA = 5;//start cutting in for x ticks after switch turn signal on for altruistic driver
 	public static double maxSpeedE = maxSpeedA * 1.2;//the maximum speed could reach for egoistic driver
 	public static int cutInWaitingTimeE = 1;//start cutting in for x ticks after switch turn signal on for egoistic driver
-	public static int specialVehicleFrequency = 0;//special vehicles appear once every x ticks;
+	public static int specialVehicleFrequency = 50;//special vehicles appear once every x ticks;
+	public int timeToSpawnSpecialVehicle = 0;
 
 	//other settings
-	public boolean hasSpeicalVehicle = false;//whether spawn special vehicle
-	public boolean hasSpeicalTruck = false;//whether spawn special vehicle
-	public boolean hasRoadInFixing = false;//whether has road current in fixing
 	public double altruisticDriverRatio = 1;//ratio of altruistic driver among all drivers
 	public double truckRatio = 0;//ratio of trucks compares to cars
 	public double truckSpeedRatio = 1;//ratio of acceleration and deceleration of truck to car
-	public double tickPerSecond = 10;//how many frames per second
 	public double frames = 30;//number of frames for one second
 	public double vehicleSpace = carLength * 0.2;
 
 	//other data
 	public int counter = 0;//a counter of current number of vehicles in the graph
 	public ArrayList<Integer> flow = new ArrayList<Integer>();//number of vehicles pass in a certain time
+	public boolean nextTruck = false;//whether next vehicle being spawned is truck
 
 	//vehicles in screen
 	public HashMap<Integer,ArrayList<Vehicle>> vehicles;
@@ -67,10 +65,8 @@ public class TrafficSimulation {
 
 	//set settings for drivers, vehicles, and board
 	public TrafficSimulation() {
-		boolean running = false;
 		//initialize attributes
 		this.road = new Road(this);
-		this.laneInFixing = 4;
 		// Initialize vehicles of lanes
 		System.out.println("initialize null ");
 		move = new Move();

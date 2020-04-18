@@ -12,6 +12,7 @@ public abstract class Vehicle {
 	private String direction;//moving direction
 	private Driver driver;
 	private int SignalSwitchedDuration = 0;//Time(ticks) after switch on turn signal
+	private Vehicle nextVehicle;//next Vehicle waiting for spawning
 
 	private boolean hasMoved;//whether has moved in current tick
 	

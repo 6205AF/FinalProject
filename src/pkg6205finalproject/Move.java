@@ -29,196 +29,149 @@ public class Move {
 		a.print();
 		System.out.println();
 		if (a.getPx() >= TrafficSimulation.roadLength) {
-			remove(n, vehicles);
-			trafficSimulation.counter--;
-			for (int i=0;i<trafficSimulation.flow.size();i++) {
-				trafficSimulation.flow.set(i, trafficSimulation.flow.get(i)+1);
+			if (a.getDirection() =="left") {
+				a.setDirection("forward");
+				remove(n,vehicles);
+			}
+			else if (a.getDirection() == "right") {
+				a.setDirection("forward");
+				remove(n,vehicles);
+			}
+			else {
+				remove(n, vehicles);
+				trafficSimulation.counter--;
+				for (int i=0;i<trafficSimulation.flow.size();i++) {
+					trafficSimulation.flow.set(i, trafficSimulation.flow.get(i)+1);
+				}
+			}
+			return;
+		}
+		else if (a.getClass().equals(new SpecialVehicle().getClass())) {
+			if (n[1]==0) {
+				judgeForward(a,null);
+				a.setPx(a.getPx()+a.getV());
+			}
+			else {
+				Vehicle front = vehicles.get(n[0]).get(n[1]-1);
+				judgeForward(a,front);
+				a.setPx(a.getPx()+a.getV());
 			}
 		}
 		//call helper function if the vehicle is in the most left lane
 		else if (n[0] == 0) {
 			LeftSideHelper(n, vehicles, trafficSimulation);
+			return;
 		}
 		//call helper function if the vehicle is in the most right lane
 		else if (n[0] == TrafficSimulation.lanes-1) {
 			RightSideHelper(n, vehicles, trafficSimulation);
+			return;
 		}
+		//the vehicle is in middle lanes
 		else {
 			Vehicle leftFront = null;
-			Vehicle rightFront = null;
+			Vehicle leftBehind = null;
 			int i = 0;
-			int j = 0;
 			if (vehicles.get(n[0]-1).size()==0) {}
-			else if (vehicles.get(n[0]-1).size()==1) {leftFront = vehicles.get(n[0]-1).get(0);}
 			else {
 				while (i<vehicles.get(n[0]-1).size()-1 && vehicles.get(n[0]-1).get(i+1).getPx() > a.getPx()) {i++;}
-				leftFront = vehicles.get(n[0]-1).get(i);
+				if (vehicles.get(n[0]-1).get(i).equals(a) && i < vehicles.get(n[0]-1).size()-1) {
+					leftBehind = vehicles.get(n[0]-1).get(i+1);
+				}
+				else if (vehicles.get(n[0]-1).get(i).getPx()<a.getPx()) {
+					leftBehind = vehicles.get(n[0]-1).get(i);
+				}
+				else {
+					leftFront = vehicles.get(n[0]-1).get(i);
+					if (vehicles.get(n[0]-1).size()==0 || i==vehicles.get(n[0]-1).size()-1) {}
+					else {
+						leftBehind = vehicles.get(n[0]-1).get(i+1);
+					} 
+					if (leftBehind != null && leftBehind.equals(a) && i<vehicles.get(n[0]-1).size()-2) {
+						leftBehind = vehicles.get(n[0]-1).get(i+2);
+					}
+				}
 			}
+			Vehicle rightFront = null;
+			Vehicle rightBehind = null;
+			int j = 0;
 			if (vehicles.get(n[0]+1).size()==0) {}
-			else if (vehicles.get(n[0]+1).size()==1) {rightFront = vehicles.get(n[0]+1).get(0);}
 			else {
 				while (j<vehicles.get(n[0]+1).size()-1 && vehicles.get(n[0]+1).get(j+1).getPx() > a.getPx()) {j++;}
 				rightFront = vehicles.get(n[0]+1).get(j);
 			}
+			if (vehicles.get(n[0]+1).get(j).getPx()<a.getPx()) {
+				rightBehind = vehicles.get(n[0]+1).get(j);
+			}
+			else if (vehicles.get(n[0]+1).size()==0 || j==vehicles.get(n[0]+1).size()-1) {}
+			else {
+				rightBehind = vehicles.get(n[0]+1).get(j+1);
+			} 
+			if (rightBehind != null && rightBehind.equals(a) && j<vehicles.get(n[0]+1).size()-2) {
+				rightBehind = vehicles.get(n[0]+1).get(j+2);
+			}
 			//if this vehicle is the most forward vehicle in current lane
 			if(n[1]==0) {
-				if (a.getDirection() == "forward") {
+				if (a.getDirection().equals("forward")) {
 					speedUp(a);
 					a.setPx(a.getPx()+a.getV());
 				}
-				else if(a.getDirection() == "left") {
-					judgeForward(a,leftFront);
-					a.setPx(a.getPx()+0.8*a.getV());
-					a.setPy(a.getPy()-0.6*a.getV());
-				}
-				else {
-					judgeForward(a,rightFront);
+				else if (a.getDirection().equals("right")){
+					judgeCuttingIn(a,null, rightFront, rightBehind);
 					a.setPx(a.getPx()+0.8*a.getV());
 					a.setPy(a.getPy()+0.6*a.getV());
-				}
-			}
-			//there is vehicle in front of a
-			else {
-				Vehicle front = vehicles.get(n[0]).get(n[1]-1);
-				//if this vehicle is moving forward
-				if (a.getDirection() == "forward") {
-					//if the driver in vehicle a is an egoistic driver and the driver in front vehicle is not
-					if (a.getDriver().getMaxSpeed() > front.getDriver().getMaxSpeed()) {
-						if (leftFront == null) {
-							catchUp(a,front);
-							a.setDirection("left");
-							a.setPx(a.getPx()+0.8*a.getV());
-							a.setPy(a.getPy()-0.6*a.getV());
-						}
-						else if (rightFront == null) {
-							catchUp(a,front);
-							a.setDirection("right");
-							a.setPx(a.getPx()+0.8*a.getV());
-							a.setPy(a.getPy()+0.6*a.getV());
-						}
-						else if (leftFront.getPx() >= rightFront.getPx()) {
-							Vehicle leftBehind = null;
-							if (vehicles.get(n[0]-1).size()==0 || i==0) {}
-							else {
-								leftBehind = vehicles.get(n[0]-1).get(i-1);
-							}
-							judge(a, front, leftFront, leftBehind, n, vehicles);
-						}
-						else {
-							Vehicle rightBehind = null;
-							if (vehicles.get(n[0]-1).size()==0 || j==0) {}
-							else {
-								rightBehind = vehicles.get(n[0]-1).get(j-1);
-							}
-							judge(a, front, rightFront, rightBehind, n, vehicles);
-						}
-					}
-					else {
-						//judge the situation
-						judgeForward(a, front);
-						a.setPx(a.getPx()+a.getV());
+					//if a has completed cutting in
+					if (a.getPy() >= (0.1+n[0]+1)*Road.LANE_WIDTH) {
+						a.setPy((0.1+n[0]+1)*Road.LANE_WIDTH);
+						a.setDirection("forward");
+						remove(n, vehicles);
+						n[1]--;
 					}
 				}
-				//a is cutting to left
-				else if (a.getDirection() == "left"){
-					Vehicle leftBehind = null;
-					if (vehicles.get(n[0]-1).size()==0 || i==0) {}
-					else {
-						leftBehind = vehicles.get(n[0]-1).get(i-1);
-					}
-					judgeCuttingIn(a,front,leftFront,leftBehind);
+				else {
+					judgeCuttingIn(a,null, leftFront, leftBehind);
 					a.setPx(a.getPx()+0.8*a.getV());
 					a.setPy(a.getPy()-0.6*a.getV());
 					//if a has completed cutting in
 					if (a.getPy() <= (0.1+n[0]-1)*Road.LANE_WIDTH) {
 						a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
 						a.setDirection("forward");
-						remove(n,vehicles);
+						remove(n, vehicles);
 						n[1]--;
 					}
 				}
-				//a is cutting to right
-				else {
-					Vehicle rightBehind = null;
-					if (vehicles.get(n[0]-1).size()==0 || j==0) {}
-					else {
-						rightBehind = vehicles.get(n[0]-1).get(j-1);
-					}
-					judgeCuttingIn(a,front,rightFront,rightBehind);
+			}
+			//there is vehicle in front of a
+			else {
+				Vehicle front = vehicles.get(n[0]).get(n[1]-1);
+				//if this vehicle is moving forward
+				if (a.getDirection().equals("forward")) {
+					judgeForward(a,front);
+					a.setPx(a.getPx()+a.getV());
+				}
+				else if (a.getDirection().equals("right")){
+					judgeCuttingIn(a,front, rightFront, rightBehind);
 					a.setPx(a.getPx()+0.8*a.getV());
 					a.setPy(a.getPy()+0.6*a.getV());
 					//if a has completed cutting in
 					if (a.getPy() >= (0.1+n[0]+1)*Road.LANE_WIDTH) {
-						a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
+						a.setPy((0.1+n[0]+1)*Road.LANE_WIDTH);
 						a.setDirection("forward");
-						remove(n,vehicles);
+						remove(n, vehicles);
 						n[1]--;
 					}
 				}
-			}
-			a.setHasMoved(true);
-			n[1]++;
-		}
-	}
-
-	public void LeftSideHelper(int[] n,HashMap<Integer,ArrayList<Vehicle>> vehicles, TrafficSimulation trafficSimulation) {
-		Vehicle a = vehicles.get(n[0]).get(n[1]);
-		//get the information of the other lane
-		Vehicle rightFront = null;
-		int i = 0;
-		if (vehicles.get(n[0]+1).size()==0) {}
-		else if (vehicles.get(n[0]+1).size()==1) {rightFront = vehicles.get(n[0]+1).get(0);}
-		else {
-			while (i<vehicles.get(n[0]+1).size()-1 && vehicles.get(n[0]+1).get(i+1).getPx() > a.getPx()) {i++;}
-			rightFront = vehicles.get(n[0]+1).get(i);
-		}
-		//if this vehicle is the most forward vehicle in the road
-		if(n[1]==0) {
-			if (a.getDirection() == "forward") {
-				speedUp(a);
-				a.setPx(a.getPx()+a.getV());
-			}
-			else {
-				judgeForward(a,rightFront);
-				a.setPx(a.getPx()+0.8*a.getV());
-				a.setPy(a.getPy()+0.6*a.getV());
-			}
-		}
-		//there is vehicle in front of a
-		else {
-			Vehicle front = vehicles.get(n[0]).get(n[1]-1);
-			//if this vehicle is moving forward
-			if (a.getDirection() == "forward") {
-				//if the driver in vehicle a is an egoistic driver and the driver in front vehicle is not
-				if (a.getDriver().getMaxSpeed() > front.getDriver().getMaxSpeed()) {
-					Vehicle rightBehind = null;
-					if (vehicles.get(n[0]-1).size()==0 || i==0) {}
-					else {
-						rightBehind = vehicles.get(n[0]-1).get(i-1);
+				else {
+					judgeCuttingIn(a,front, leftFront, leftBehind);
+					a.setPx(a.getPx()+0.8*a.getV());
+					a.setPy(a.getPy()-0.6*a.getV());
+					//if a has completed cutting in
+					if (a.getPy() <= (0.1+n[0]-1)*Road.LANE_WIDTH) {
+						a.setPy((0.1+n[0]-1)*Road.LANE_WIDTH);
+						a.setDirection("forward");
+						remove(n, vehicles);
+						n[1]--;
 					}
-					judge(a, front, rightFront, rightBehind, n, vehicles);
-				}
-				else {
-					//judge the situation
-					judgeForward(a, front);
-					a.setPx(a.getPx()+a.getV());
-				}
-			}
-			//a is cutting to right
-			else {
-				Vehicle rightBehind = null;
-				if (vehicles.get(n[0]-1).size()==0 || i==0) {}
-				else {
-					rightBehind = vehicles.get(n[0]-1).get(i-1);
-				}
-				judgeCuttingIn(a,front,rightFront,rightBehind);
-				a.setPx(a.getPx()+0.8*a.getV());
-				a.setPy(a.getPy()+0.6*a.getV());
-				//if a has completed cutting in
-				if (a.getPy() >= (0.1+n[0])*Road.LANE_WIDTH) {
-					a.setPy((0.1+n[0])*Road.LANE_WIDTH);
-					a.setDirection("forward");
-					remove(n, vehicles);
 				}
 			}
 		}
@@ -226,6 +179,72 @@ public class Move {
 		n[1]++;
 	}
 
+	public void LeftSideHelper(int[] n,HashMap<Integer,ArrayList<Vehicle>> vehicles, TrafficSimulation trafficSimulation) {
+		//get the information of the other lane
+		Vehicle a = vehicles.get(n[0]).get(n[1]);
+		Vehicle rightFront = null;
+		Vehicle rightBehind = null;
+		int i = 0;
+		if (vehicles.get(n[0]+1).size()==0) {}
+		else {
+			while (i<vehicles.get(n[0]+1).size()-1 && vehicles.get(n[0]+1).get(i+1).getPx() > a.getPx()) {i++;}
+			rightFront = vehicles.get(n[0]+1).get(i);
+		}
+		if (vehicles.get(n[0]+1).get(i).getPx()<a.getPx()) {
+			rightBehind = vehicles.get(n[0]+1).get(i);
+		}
+		else if (vehicles.get(n[0]+1).size()==0 || i==vehicles.get(n[0]+1).size()-1) {}
+		else {
+			rightBehind = vehicles.get(n[0]+1).get(i+1);
+		} 
+		if (rightBehind != null && rightBehind.equals(a) && i<vehicles.get(n[0]+1).size()-2) {
+			rightBehind = vehicles.get(n[0]+1).get(i+2);
+		}
+		//there is no vehicle in front of a
+		if(n[1]==0) {
+			if (a.getDirection().equals("forward")) {
+				speedUp(a);
+				a.setPx(a.getPx()+a.getV());
+			}
+			else {
+				judgeCuttingIn(a,null, rightFront, rightBehind);
+				a.setPx(a.getPx()+0.8*a.getV());
+				a.setPy(a.getPy()+0.6*a.getV());
+				//if a has completed cutting in
+				if (a.getPy() >= (0.1+n[0]+1)*Road.LANE_WIDTH) {
+					a.setPy((0.1+n[0]+1)*Road.LANE_WIDTH);
+					a.setDirection("forward");
+					remove(n, vehicles);
+					n[1]--;
+				}
+			}
+		}
+		//there is vehicle in front of a
+		else {
+			Vehicle front = vehicles.get(n[0]).get(n[1]-1);
+			//if this vehicle is moving forward
+			if (a.getDirection().equals("forward")) {
+				//judge the situation
+				judgeForward(a, front);
+				a.setPx(a.getPx()+a.getV());
+			}
+			//a is cutting to left
+			else {
+				judgeCuttingIn(a,front,rightFront,rightBehind);
+				a.setPx(a.getPx()+0.8*a.getV());
+				a.setPy(a.getPy()-0.6*a.getV());
+				//if a has completed cutting in
+				if (a.getPy() >= (0.1+n[0]+1)*Road.LANE_WIDTH) {
+					a.setPy((0.1+n[0]+1)*Road.LANE_WIDTH);
+					a.setDirection("forward");
+					remove(n, vehicles);
+					n[1]--;
+				}
+			}
+		}
+		a.setHasMoved(true);
+		n[1]++;
+	}
 
 	public void RightSideHelper(int[] n,HashMap<Integer,ArrayList<Vehicle>> vehicles, TrafficSimulation trafficSimulation) {
 		Vehicle a = vehicles.get(n[0]).get(n[1]);
@@ -347,6 +366,13 @@ public class Move {
 		if (sideBehind == null) {
 			judgeForward(a,sideFront);
 		}
+		if (front == null && sideFront == null) {
+			speedUp(a);
+		}
+		if (a.getDirection()=="left" && sideBehind.getDirection()=="right" ||
+				a.getDirection()=="right"&& sideBehind.getDirection()=="left") {
+			judgeForward(a,sideFront);
+		}
 		//if there is no space for a to cut in
 		else if(sideBehind.getPx()+sideBehind.getLength()>a.getPx()) {
 			brake(a);
@@ -436,6 +462,34 @@ public class Move {
 		}
 	}
 
+	//force all vehicles in this lane to switch lane
+	public void forceSwitch(int k,TrafficSimulation ts) {
+		int j=k-1,j1=0;
+		int l=k+1,l1=0;
+		int k1=0;
+		while (k1 < ts.vehicles.get(k).size()) {
+			Vehicle a = ts.vehicles.get(k).get(k1);
+			Vehicle leftFront = null;
+			Vehicle rightFront = null;
+			while (j1<ts.vehicles.get(j).size()-1 && ts.vehicles.get(j).get(j1+1).getPx() > a.getPx()) {
+				j1++;
+			}
+			leftFront = ts.vehicles.get(j).get(j1);
+			while (l1<ts.vehicles.get(l).size()-1 && ts.vehicles.get(l).get(l1+1).getPx() > a.getPx()) {
+				l1++;
+			}
+			rightFront = ts.vehicles.get(l).get(l1);
+			if (leftFront.getPx() >= rightFront.getPx()) {
+				a.setDirection("left");
+				ts.vehicles.get(j).add(++j1, a);
+			}
+			else {
+				a.setDirection("right");
+				ts.vehicles.get(l).add(++l1, a);
+			}
+			k1++;
+		}
+	}
 	//find the most forward vehicle
 	public int[] findMostForward(int[] n1,int[] n2,HashMap<Integer,ArrayList<Vehicle>> vehicles) {
 		//if all vehicles in n1 has moved or n1 has moved
@@ -475,50 +529,95 @@ public class Move {
 
 	////spawn new vehicle in a random possible lane
 	public void spawn(TrafficSimulation trafficSimulation) {
+		trafficSimulation.timeToSpawnSpecialVehicle++;
 		Random a = new Random();
-		double vehicleType = a.nextDouble();
-		double driverType = a.nextDouble();
+		ArrayList<Integer> l = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4));
 		Driver d = null;
 		Vehicle newVehicle = null;
-		//decide which kind of vehicle should be spawned
-		if (vehicleType < trafficSimulation.truckRatio) {
-			newVehicle =  new Truck(trafficSimulation.truckLength, trafficSimulation.width, trafficSimulation.acceleration*trafficSimulation.truckSpeedRatio,trafficSimulation.deceleration*trafficSimulation.truckSpeedRatio, 0);
-		}
-		else {
-			newVehicle = new Car(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
-		}	
-		//decide which kind of driver is in the vehicle	
-		if (driverType <= trafficSimulation.altruisticDriverRatio) {
-			d = new Driver(true, trafficSimulation.cutInWaitingTimeA, trafficSimulation.maxSpeedA);
-		}
-		else {
+		if (trafficSimulation.timeToSpawnSpecialVehicle >= TrafficSimulation.specialVehicleFrequency) {
+			newVehicle = new SpecialVehicle(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
 			d = new Driver(false, trafficSimulation.cutInWaitingTimeE, trafficSimulation.maxSpeedE);
-		}
-		newVehicle.setDriver(d);
-		//spawn new vehicle in a random possible lane
-		ArrayList<Integer> l = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4));
-		while (l.size() != 0) {
-			int i = a.nextInt(l.size());
-			if (trafficSimulation.vehicles.get(l.get(i)).size()==0) {
-				newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
-				trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
-				trafficSimulation.counter++;
-				break;
+			newVehicle.setDriver(d);
+			l = new ArrayList<Integer>(Arrays.asList(1,2));
+			while (l.size() != 0) {
+				int i = a.nextInt(l.size());
+				if (trafficSimulation.vehicles.get(l.get(i)).size()==0) {
+					newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
+					trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
+					trafficSimulation.counter++;
+					trafficSimulation.timeToSpawnSpecialVehicle = 0;
+					return;
+				}
+				else {
+					Vehicle lastVehicle = trafficSimulation.vehicles.get(l.get(i)).get(trafficSimulation.vehicles.get(l.get(i)).size()-1);
+					if (newVehicle.getPx() + newVehicle.getLength() < lastVehicle.getPx()) {
+						newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
+						forceSwitch(l.get(i),trafficSimulation);
+						trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
+						trafficSimulation.counter++;
+						trafficSimulation.timeToSpawnSpecialVehicle = 0;
+						return;
+					}
+					else l.remove(i);
+				}
 			}
-			Vehicle lastVehicle = trafficSimulation.vehicles.get(l.get(i)).get(trafficSimulation.vehicles.get(l.get(i)).size()-1);
-			if (newVehicle.getPx() + newVehicle.getLength() < lastVehicle.getPx()) {
-				newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
-				trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
-				trafficSimulation.counter++;
-				break;
+			return;
+		}
+		while (l.size() != 0) {
+			double vehicleType = a.nextDouble();
+			double driverType = a.nextDouble();
+			//decide which kind of vehicle should be spawned
+			if (trafficSimulation.nextTruck) {
+				newVehicle =  new Truck(trafficSimulation.truckLength, trafficSimulation.width, trafficSimulation.acceleration*trafficSimulation.truckSpeedRatio,trafficSimulation.deceleration*trafficSimulation.truckSpeedRatio, 0);
 			}
 			else {
-				l.remove(i);
+				newVehicle = new Car(trafficSimulation.carLength, trafficSimulation.width, trafficSimulation.acceleration, trafficSimulation.deceleration, 0);
+			}
+			//decide which kind of driver is in the vehicle	
+			if (driverType <= trafficSimulation.altruisticDriverRatio) {
+				d = new Driver(true, trafficSimulation.cutInWaitingTimeA, trafficSimulation.maxSpeedA);
+			}
+			else {
+				d = new Driver(false, trafficSimulation.cutInWaitingTimeE, trafficSimulation.maxSpeedE);
+			}
+			newVehicle.setDriver(d);
+			//spawn new vehicle in a random possible lane
+			while (l.size() != 0) {
+				int i = a.nextInt(l.size());
+				if (trafficSimulation.vehicles.get(l.get(i)).size()==0) {
+					newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
+					trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
+					trafficSimulation.counter++;
+					if(vehicleType < trafficSimulation.truckRatio) {
+						trafficSimulation.nextTruck = true;
+					}
+					else {
+						trafficSimulation.nextTruck = false;
+					}
+					break;
+				}
+				Vehicle lastVehicle = trafficSimulation.vehicles.get(l.get(i)).get(trafficSimulation.vehicles.get(l.get(i)).size()-1);
+				if (newVehicle.getPx() + newVehicle.getLength() < lastVehicle.getPx()) {
+					newVehicle.setPy((l.get(i)+0.1)*trafficSimulation.road.LANE_WIDTH);
+					trafficSimulation.vehicles.get(l.get(i)).add(newVehicle);
+					trafficSimulation.counter++;
+					if(vehicleType < trafficSimulation.truckRatio) {
+						trafficSimulation.nextTruck = true;
+					}
+					else {
+						trafficSimulation.nextTruck = false;
+					}
+					break;
+				}
+				else {
+					l.remove(i);
+				}
 			}
 		}
 	}
 
-	//reorder vehicles in ArrayList<Vehicle> by decending px(bubble sort)
+
+	//sort vehicles in ArrayList<Vehicle> by decending px(bubble sort)
 	public void reorder(TrafficSimulation ts) {
 		for(int i=0;i<ts.vehicles.size();i++) {
 			for(int j=0;j<ts.vehicles.get(i).size()-1;j++) {
@@ -537,7 +636,7 @@ public class Move {
 	}
 
 	public void updateFlow(TrafficSimulation ts) {
-		if (ts.flow.size() == 30) {
+		if (ts.flow.size() == ts.specialVehicleFrequency) {
 			ts.flow.remove(0);
 		}
 		ts.flow.add(0);
