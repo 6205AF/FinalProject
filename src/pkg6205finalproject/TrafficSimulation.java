@@ -92,7 +92,7 @@ public class TrafficSimulation {
 		situations.addItem("4 lanes");
 		situations.addItem("5 lanes");
 		situations.addItem("4 lanes + special vehicle + truck");
-		situations.addItem("5 lanes + special vehicl");
+		situations.addItem("5 lanes + special vehicle");
 		JButton start = new JButton("Start");
 		JButton stop = new JButton("Stop");
 		JPanel panelSouth = new JPanel();
